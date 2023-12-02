@@ -9,9 +9,15 @@ fun main() {
 
     println("Running day2")
     val lines = fileToArray("day2/input")
-
-    println("Task 1 res: ${task1(lines)}")
-    println("Task 2 res: ${task2(lines)}")
+    var task1 = 0
+    var task2 = 0
+    lines.forEach {
+        val game = parseLine(it)
+        if (game.isValid(12, 13, 14)) task1 += game.id
+        task2 += game.getMinCubes()
+    }
+    println("Task 1 res: $task1")
+    println("Task 2 res: $task2")
 
     val endTime = System.nanoTime()
     val elapsedTime = endTime - startTime
@@ -45,24 +51,6 @@ class Game(val id: Int) {
     override fun toString(): String {
         return "Id: $id"
     }
-}
-
-fun task1(input: Array<String>): Int {
-    var sum = 0
-    input.forEach {
-        val game = parseLine(it)
-        if (game.isValid(12, 13, 14)) sum += game.id
-    }
-    return sum
-}
-
-fun task2(input: Array<String>): Int {
-    var sum = 0
-    input.forEach {
-        val game = parseLine(it)
-        sum += game.getMinCubes()
-    }
-    return sum
 }
 
 fun parseLine(line: String): Game {
