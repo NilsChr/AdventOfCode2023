@@ -8,7 +8,7 @@ fun main() {
     val startTime = System.nanoTime()
 
     println("Running day1")
-    val lines = fileToArray("day1")
+    val lines = fileToArray("day1/input")
 
     println("Task 1_2 res: ${task1(lines)}")
     println("Task 2_2 res: ${task2(lines)}")
