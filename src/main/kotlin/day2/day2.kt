@@ -8,7 +8,7 @@ fun main() {
     val startTime = System.nanoTime()
 
     println("Running day2")
-    val lines = fileToArray("day2/input")
+    val lines = fileToArray("day2/test")
     var task1 = 0
     var task2 = 0
     lines.forEach {
@@ -55,26 +55,20 @@ class Game(val id: Int) {
 
 fun parseLine(line: String): Game {
     val parts = line.split(":", ";")
-    val id = extractNumber(parts[0])
+    val id = parts[0].split(" ")[1].toInt()
     val game = Game(id)
     parts.forEachIndexed { index, part ->
         if (index == 0) return@forEachIndexed
         val set = CubeSet()
         val colors = part.split(",")
         colors.forEach {
-            if (it.contains("red")) set.red = extractNumber(it)
-            if (it.contains("green")) set.green = extractNumber(it)
-            if (it.contains("blue")) set.blue = extractNumber(it)
+            val colorParts = it.trim().split(" ")
+            if (colorParts.isEmpty()) return@forEachIndexed
+            if (colorParts[1] == "red") set.red = colorParts[0].toInt()
+            if (colorParts[1] == "green") set.green = colorParts[0].toInt()
+            if (colorParts[1] == "blue") set.blue = colorParts[0].toInt()
         }
         game.cubeSets += set
     }
     return game
-}
-
-fun extractNumber(input: String): Int {
-    val regex = Regex(pattern = "\\d+")
-    val matchResult = regex.find(input)
-    val number = matchResult?.value?.toIntOrNull()
-    if (number != null) return number
-    return 0
 }
