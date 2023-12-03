@@ -1,14 +1,13 @@
 package day2
 
-import fileToArray
+import readFile
 
 data class CubeSet(var red: Int = 0, var green: Int = 0, var blue: Int = 0)
 
 fun main() {
     val startTime = System.nanoTime()
-
     println("Running day2")
-    val lines = fileToArray("day2/test")
+    val lines = readFile("day2/input")
     var task1 = 0
     var task2 = 0
     lines.forEach {
@@ -18,7 +17,6 @@ fun main() {
     }
     println("Task 1 res: $task1")
     println("Task 2 res: $task2")
-
     val endTime = System.nanoTime()
     val elapsedTime = endTime - startTime
     val elapsedSeconds = elapsedTime / 1_000_000_000.0 // Convert nanoseconds to seconds
@@ -28,28 +26,14 @@ fun main() {
 class Game(val id: Int) {
     var cubeSets: List<CubeSet> = emptyList()
     fun isValid(red: Int, green: Int, blue: Int): Boolean {
-        cubeSets.forEach {
-            if (it.red > red) return false
-            if (it.green > green) return false
-            if (it.blue > blue) return false
-        }
-        return true
+        return cubeSets.all { it.red <= red && it.green <= green && it.blue <= blue }
     }
 
     fun getMinCubes(): Int {
-        var red = 0
-        var green = 0
-        var blue = 0
-        cubeSets.forEach {
-            if (it.red > red) red = it.red
-            if (it.green > green) green = it.green
-            if (it.blue > blue) blue = it.blue
-        }
+        val red = cubeSets.maxByOrNull { it.red }?.red ?: 1
+        val green = cubeSets.maxByOrNull { it.green }?.green ?: 1
+        val blue = cubeSets.maxByOrNull { it.blue }?.blue ?: 1
         return red * green * blue
-    }
-
-    override fun toString(): String {
-        return "Id: $id"
     }
 }
 

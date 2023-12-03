@@ -1,26 +1,22 @@
 package day1
 
-import fileToArray
+import readFile
 
 val numberStrings = arrayOf("one", "two", "three", "four", "five", "six", "seven", "eight", "nine")
 
 fun main() {
     val startTime = System.nanoTime()
-
     println("Running day1")
-    val lines = fileToArray("day1/input")
-
+    val lines = readFile("day1/input")
     println("Task 1_2 res: ${task1(lines)}")
     println("Task 2_2 res: ${task2(lines)}")
-
     val endTime = System.nanoTime()
     val elapsedTime = endTime - startTime
     val elapsedSeconds = elapsedTime / 1_000_000_000.0 // Convert nanoseconds to seconds
-
     println("Elapsed Time: $elapsedSeconds seconds")
 }
 
-fun task1(input: Array<String>): Int {
+fun task1(input: List<String>): Int {
     val calibrationValues: MutableList<Int> = mutableListOf()
     input.forEach { line ->
         val first = findFirstNumber(line, rev = false, matchStrings = false)
@@ -30,7 +26,7 @@ fun task1(input: Array<String>): Int {
     return calibrationValues.reduce { acc, v -> acc + v }
 }
 
-fun task2(input: Array<String>): Int {
+fun task2(input: List<String>): Int {
     val calibrationValues: MutableList<Int> = mutableListOf()
     input.forEach { line ->
         val first = findFirstNumber(line, rev = false, matchStrings = true)
