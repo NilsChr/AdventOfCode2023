@@ -6,8 +6,8 @@ import java.util.Queue
 
 fun main() {
     val startTime = System.nanoTime()
-    println("Running day x")
     val lines = readFile("day4/input")
+    println("Running day 4")
     val tasks = task(lines)
     println("Task 1 res: ${tasks.first}")
     println("Task 2 res: ${tasks.second}")
@@ -21,16 +21,19 @@ fun task(lines: List<String>): Pair<Int, Int> {
     val cards = mutableMapOf<Int, Card>()
     val queue: Queue<Card> = LinkedList()
     var task1 = 0
+    var task2 = 0
 
     lines.forEach{
         val card = parseLine(it)
-        card.process()
+        card.guesses.intersect(card.winning).forEachIndexed{ i, _ ->
+            card.winningNumbers += card.id + i + 1
+            if(card.score == 0) card.score = 1
+            else card.score *= 2
+        }
         task1 += card.score
         cards[card.id] = card
         queue += card
     }
-
-    var task2 = 0
 
     do {
         val current = queue.remove()
@@ -41,33 +44,13 @@ fun task(lines: List<String>): Pair<Int, Int> {
     return Pair(task1,task2)
 }
 
-class Card(val id: Int, val winning: List<Int>, val guesses: List<Int> ) {
+class Card(val id: Int, val winning: Set<Int>, val guesses: Set<Int> ) {
     var score: Int = 0
     var winningNumbers: List<Int> = emptyList()
-    fun process() {
-        var wins: List<Int> = emptyList()
-        this.guesses.forEach{ guess ->
-            if(this.winning.contains(guess)) {
-                wins += guess
-                if(score == 0) score = 1
-                else score *= 2
-            }
-        }
-        wins.forEachIndexed{i,_ ->
-            winningNumbers += id + i + 1
-        }
-    }
-    override fun toString(): String {
-        return "Card $id: ${winning.joinToString()} | ${guesses.joinToString()}"
-    }
 }
 
 fun parseLine(line: String): Card {
-    val partsA = line.split(':')
-    val idParts = partsA[0].split(' ')
-    val id = idParts[idParts.size-1].toInt()
-    val numbers = partsA[1].split('|')
-    val winning = numbers[0].trim().split(" ").filter{it.isNotEmpty()}.map{it.toInt()}
-    val guesses = numbers[1].trim().split(" ").filter{it.isNotEmpty()}.map{it.toInt()}
-    return Card(id, winning, guesses)
+    val numberRegex = Regex("\\d+")
+    val numbers = numberRegex.findAll(line).map(MatchResult::value).map(String::toInt)
+    return Card(numbers.first(), numbers.drop(1).take(10).toSet(), numbers.drop(11).toSet())
 }
