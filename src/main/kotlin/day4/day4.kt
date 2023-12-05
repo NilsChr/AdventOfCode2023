@@ -1,12 +1,12 @@
 package day4
 
-import readFile
+import readLinesUsingBufferedReader
 import java.util.LinkedList
 import java.util.Queue
 
 fun main() {
     val startTime = System.nanoTime()
-    val lines = readFile("day4/input")
+    val lines = readLinesUsingBufferedReader("day4/input")
     println("Running day 4")
     val tasks = task(lines)
     println("Task 1 res: ${tasks.first}")
@@ -17,7 +17,7 @@ fun main() {
     println("Elapsed Time: $elapsedSeconds seconds")
 }
 
-fun task(lines: List<String>): Pair<Int, Int> {
+fun task(lines: Array<String>): Pair<Int, Int> {
     val cards = mutableMapOf<Int, Card>()
     val queue: Queue<Card> = LinkedList()
     var task1 = 0
@@ -25,11 +25,13 @@ fun task(lines: List<String>): Pair<Int, Int> {
 
     lines.forEach{
         val card = parseLine(it)
+
         card.guesses.intersect(card.winning).forEachIndexed{ i, _ ->
             card.winningNumbers += card.id + i + 1
             if(card.score == 0) card.score = 1
             else card.score *= 2
         }
+
         task1 += card.score
         cards[card.id] = card
         queue += card
