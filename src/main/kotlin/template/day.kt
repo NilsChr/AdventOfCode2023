@@ -1,11 +1,11 @@
 package template
 
-import readFile
+import readLinesUsingBufferedReader
 
 fun main() {
     val startTime = System.nanoTime()
     println("Running day x")
-    val lines = readFile("day1/input")
+    val lines = readLinesUsingBufferedReader("dayx/input")
     println("Task 1 res: ")
     println("Task 2 res: ")
     val endTime = System.nanoTime()
