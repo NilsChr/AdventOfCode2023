@@ -8,3 +8,8 @@ fun stringToLongArray(input: String): Array<Long> {
     val numberRegex = Regex("\\b\\d+\\b")
     return numberRegex.findAll(input).map { it.value.toLong() }.toList().toTypedArray()
 }
+
+fun extractStrings(input: String): Array<String> {
+    val numberRegex = Regex("\\b\\s+\\b")
+    return numberRegex.findAll(input).map { it.value }.toList().toTypedArray()
+}
