@@ -15,24 +15,26 @@ enum class CardScore(val code: Int) {
     SAME_5(7)
 }
 fun main() {
-    val startTime = System.nanoTime()
     println("Running day 7")
+    val startTime = System.nanoTime()
     val lines = readLinesUsingBufferedReader("day7/input")
-    val cards = parseCards(lines, cardValues, false)
-    val jokers = parseCards(lines, cardValuesJoker, true)
-    println("Task 1 res: ${part1(cards)}")
-    println("Task 2 res: ${part1(jokers)}")
+    val cards = parseCards(lines)
+    val task1 = part1(cards)
+    cards.forEach { it.setJoker() }
+    val task2 = part1(cards)
     val endTime = System.nanoTime()
     val elapsedTime = endTime - startTime
     val elapsedSeconds = elapsedTime / 1_000_000_000.0 // Convert nanoseconds to seconds
+    println("Task 1 res: $task1")
+    println("Task 2 res: $task2")
     println("Elapsed Time: $elapsedSeconds seconds")
 }
 
-fun parseCards(lines: Array<String>, cardValues: Array<Char>, joker: Boolean): List<Card> {
+fun parseCards(lines: Array<String>): List<Card> {
     val cards = mutableListOf<Card>()
     lines.forEach { line ->
         val parts = line.split(" ")
-        cards.add(Card(parts[0], parts[1].toInt(), cardValues, joker))
+        cards.add(Card(parts[0], parts[1].toInt()))
     }
     return cards
 }
@@ -44,22 +46,32 @@ fun part1(cards: List<Card>):Int {
     return score
 }
 
-class Card(val hand: String, val bid: Int, val cValues: Array<Char>, val joker: Boolean) : Comparable<Card> {
-    var score: CardScore = CardScore.HIGH_CARD
+class Card(val hand: String, val bid: Int) : Comparable<Card> {
+    private var score: CardScore = CardScore.HIGH_CARD
+    private var joker: Boolean = false
     private var bestJokerHand: CardScore = CardScore.HIGH_CARD
     init {
         score = calculateScore(hand)
+    }
+
+    fun setJoker() {
+        joker = true
         calculateBestJoker()
-        if(joker) score = bestJokerHand
+        score = bestJokerHand
     }
 
     private fun calculateBestJoker() {
         val values = "J23456789TQKA"
-        for(i in 0 until values.length) {
-            val tempScore = calculateScore(hand.replace('J', values[i]))
+        for(element in values) {
+            val tempScore = calculateScore(hand.replace('J', element))
             if(tempScore > bestJokerHand)
                 bestJokerHand = tempScore
         }
+    }
+
+    private fun getCardValue(card: Char): Int {
+        if(joker) return cardValuesJoker.indexOf(card)
+        return cardValues.indexOf(card)
     }
 
     override fun compareTo(other: Card): Int {
@@ -67,12 +79,11 @@ class Card(val hand: String, val bid: Int, val cValues: Array<Char>, val joker: 
             return this.score.code - other.score.code
         }
 
-        for (c in 0 until 5) {
+        for (c in 0..<5) {
             val cardA = this.hand[c]
             val cardB = other.hand[c]
-            val indexA = cValues.indexOf(cardA)
-            val indexB = cValues.indexOf(cardB)
-
+            val indexA = getCardValue(cardA)
+            val indexB = getCardValue(cardB)
             if (indexA != indexB) {
                 return indexA - indexB
             }
@@ -100,7 +111,6 @@ fun calculateScore(hand: String): CardScore {
     }
     if(foundThree && foundTwo) {
         return CardScore.FULL_HOUSE
-
     }
     if(foundThree) {
         return CardScore.SAME_3
