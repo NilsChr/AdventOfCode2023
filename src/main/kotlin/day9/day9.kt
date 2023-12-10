@@ -1,7 +1,7 @@
 package day9
 
 import readLinesUsingBufferedReader
-import stringToIntArrayFast
+import stringToIntArray
 
 fun main() {
     val startTime = System.nanoTime()
@@ -20,7 +20,7 @@ fun combo(lines: Array<String>): Pair<Int, Int> {
     var part1 = 0
     var part2 = 0
     lines.forEach { line ->
-        val inputArray = stringToIntArrayFast(line).toMutableList()
+        val inputArray = stringToIntArray(line).toMutableList()
         val matrix  = mutableListOf<MutableList<Int>>()
         matrix.add(inputArray)
         var between = inputArray.zipWithNext{ a, b -> b - a }.toMutableList()
