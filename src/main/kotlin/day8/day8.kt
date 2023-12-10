@@ -3,7 +3,7 @@ package day8
 import readLinesUsingBufferedReader
 
 var instructions: String = ""
-var nodes: MutableMap<String, Node> = mutableMapOf()
+var nodes = mutableMapOf<String, Node>()
 
 fun main() {
     val startTime = System.nanoTime()
