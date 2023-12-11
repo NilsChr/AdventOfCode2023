@@ -6,7 +6,7 @@ import kotlin.concurrent.thread
 import kotlin.math.abs
 import kotlin.math.min
 import kotlin.math.max
-data class Galaxy(val id: Int, val position: Point)
+data class Galaxy(val id: Int, val x: Int, val y: Int)
 
 fun main() {
     val lines = readFileToGrid("day11/input")
@@ -25,6 +25,7 @@ fun main() {
     task1Thread.join()
     task2Thread.join()
 }
+
 fun expandUniverse(universe: Array<Array<Char>>, rate: Int): Pair<Array<Int>, Array<Int>> {
     val spaceY = Array(universe.size) { i ->
         if (universe[i].all { it == '.' }) rate else 1
@@ -43,7 +44,8 @@ fun locateGalaxies(universe: Array<Array<Char>>): MutableList<Galaxy> {
     for(y in universe.indices) {
         for(x in 0 ..< universe[y].size) {
             if(universe[y][x] == '#') {
-                galaxies.add(Galaxy(id++,Point(x,y)))
+                //galaxies.add(Galaxy(id++,Point(x,y)))
+                galaxies.add(Galaxy(id++,x,y))
             }
         }
     }
@@ -54,15 +56,15 @@ fun process(galaxies: MutableList<Galaxy>,expansions: Pair<Array<Int>, Array<Int
     val shortPaths = mutableMapOf<String, Long>()
     for(galaxy in galaxies) {
         for(other in galaxies.filter { it != galaxy }) {
-            val startX = min(galaxy.position.x, other.position.x)
-            val distX  = abs(galaxy.position.x - other.position.x)
+            val startX = min(galaxy.x, other.x)
+            val distX  = abs(galaxy.x - other.x)
             var travelX = 0L
             for(x in startX ..< startX+distX) {
                 travelX += expansions.first[x]
             }
 
-            val startY = min(galaxy.position.y, other.position.y)
-            val distY  = abs(galaxy.position.y - other.position.y)
+            val startY = min(galaxy.y, other.y)
+            val distY  = abs(galaxy.y - other.y)
             var travelY = 0L
             for(y in startY ..< startY+distY) {
                 travelY += expansions.second[y]
