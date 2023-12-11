@@ -36,6 +36,7 @@ fun readLinesUsingBufferedReader(fileName: String): Array<String> {
 
 
 fun readFileToGrid(fileName: String): Array<Array<Char>> {
-    val fileContent = File("./input/$fileName.txt").readText()
-    return fileContent.lines().map{ line -> line.map { it }.toTypedArray<Char>()}.toTypedArray()
+    val fileContent = readLinesUsingBufferedReader(fileName) //File("./input/$fileName.txt").readText()
+    return fileContent.map{ line -> line.map { it }.toTypedArray<Char>()}.toTypedArray()
+    //return fileContent.lines().map{ line -> line.map { it }.toTypedArray<Char>()}.toTypedArray()
 }
